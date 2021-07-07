@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przekszałcenie na Json</title>
+</head>
+<body>
+    <form id="myForm" action="/upload" method="POST" enctype="multipart/form-data">
+        <input id="image-file" type="file" name="image-file">
+        <button id="myBtn">Wyślij</button>
+ </form>
+
+    <script>
+     document.getElementById("myBtn").addEventListener("click", async function() {
+        const excel = await document.getElementById("image-file").files[0];
+        const formData = new FormData();
+        console.log(excel);
+        console.log(formData);
+        debugger;
+        formData.append("name", "Imię");
+
+        formData.append("image-file", excel);
+        console.log(formData.get("image-file"))
+
+     try {
+        
+
+       var r = fetch('/upload', 
+         {method: "POST", body: formData}
+         ); 
+       console.log('HTTP response code:',r.status); 
+       console.log(r);
+    } catch(e) {
+       console.log('Huston we have problem...:', e);
+    }
+        console.log("udalo sie");
+        
+        console.log(formData);
+        debugger;
+        
+});
+    </script>
+</body>
+</html>
