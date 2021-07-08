@@ -1,46 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Przekszałcenie na Json</title>
 </head>
+
 <body>
-    <form id="myForm" action="/upload" method="POST" enctype="multipart/form-data">
-        <input id="image-file" type="file" name="image-file">
+    <form id="myForm" enctype="multipart/form-data">
+        <input id="Excelfile" type="file" name="excel.xlsx">
         <button id="myBtn">Wyślij</button>
- </form>
+    </form>
+    <p id="wypis"></p>
 
     <script>
-     document.getElementById("myBtn").addEventListener("click", async function() {
-        const excel = await document.getElementById("image-file").files[0];
-        const formData = new FormData();
-        console.log(excel);
-        console.log(formData);
-        debugger;
-        formData.append("name", "Imię");
+        document.getElementById("myBtn").addEventListener("click", async function () {
+            const excel = document.getElementById("Excelfile").files[0];
+            const formData = new FormData();
 
-        formData.append("image-file", excel);
-        console.log(formData.get("image-file"))
 
-     try {
-        
+            formData.append("excel.xlsx", excel);
 
-       var r = fetch('/upload', 
-         {method: "POST", body: formData}
-         ); 
-       console.log('HTTP response code:',r.status); 
-       console.log(r);
-    } catch(e) {
-       console.log('Huston we have problem...:', e);
-    }
-        console.log("udalo sie");
-        
-        console.log(formData);
-        debugger;
-        
-});
+            try {
+                // const r = await fetch('/upload', {method: "POST", body: formData}); 
+                //const dzejson = await r.json();
+                //console.log(dzejson);
+                //console.log('HTTP response code:',r.status); 
+                //const myJson2 = JSON.parse(dzejson)
+                //console.log(myJson2)
+
+                //document.getElementById("wypis").innerHTML = myJson2;
+                fetch('/upload', { method: "POST", body: formData }).then(res => {
+                    if (res.ok) {
+                        return res.json()
+                    } else {
+                        return Promise.reject(`Http error: ${res.status}`);
+                        //lub rzucając błąd
+                        //throw new Error(`Http error: ${res.status}`);
+                    }
+                })
+                    .then(res => {
+                        console.log(res)
+                        const myJson2 = JSON.parse(res)
+                        console.log(myJson2[0])
+
+                    })
+                    .catch(error => {
+                        console.error(error)
+
+
+                    });
+                //document.write(myJson)
+                document.getElementById("wypis").innerHTML = "myJson2";
+
+
+            } catch (e) {
+                console.log('Huston we have problem...:', e);
+            }
+
+
+
+        });
+        document.getElementById("wypis").innerHTML = "myJson8";
+
     </script>
+
 </body>
+
 </html>
