@@ -16,10 +16,10 @@
     <p id="wypis"></p>
 
     <script>
-        document.getElementById("myBtn").addEventListener("click", async function () {
+        document.getElementById("myBtn").addEventListener("click", async function (e) {
             const excel = document.getElementById("Excelfile").files[0];
             const formData = new FormData();
-
+            event.preventDefault();
 
             formData.append("excel.xlsx", excel);
 
@@ -45,6 +45,7 @@
                         console.log(res)
                         const myJson2 = JSON.parse(res)
                         console.log(myJson2[0])
+                        document.getElementById("wypis").innerHTML = res;
 
                     })
                     .catch(error => {
@@ -53,7 +54,6 @@
 
                     });
                 //document.write(myJson)
-                document.getElementById("wypis").innerHTML = "myJson2";
 
 
             } catch (e) {
