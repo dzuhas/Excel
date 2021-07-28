@@ -6,16 +6,13 @@ const path = require('path');
 const app = express();
 var xlsx = require('xlsx');
 const Trim = require('trim');
+
 app.listen(3001, () => console.log("App is listening..."));
+
 app.use(express.static(
   path.join(__dirname, 'public')));
-console.log("opijajej");
-//app.use(
-//  express.urlencoded({
-//  extended: true
-//})
-//);
-//proba gita
+
+
 app.use(express.json());
 // Okreslenie nazwy zapisywanego pliku
 const storage = multer.diskStorage({
@@ -34,20 +31,19 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
 
   console.log(req.file);
   var wb = xlsx.readFile("./upload/excel.xlsx")
-
   var sheet_name_list = wb.SheetNames;
   console.log(sheet_name_list)
   const victory = []
   sheet_name_list.forEach((sheetName) => {
-    victory.push(xlsx.utils.sheet_to_json(wb.Sheets[sheetName]))
+  victory.push(xlsx.utils.sheet_to_json(wb.Sheets[sheetName]))
   })
-  //var victory = xlsx.utils.sheet_to_json(wb.Sheets[sheet_name_list[0]])
+  
   console.log(victory)
   function renameKey(obj, oldKey, newKey) {
     obj[newKey] = obj[oldKey];
     delete obj[oldKey];
   }
-  //const arr = JSON.parse(victory);
+  
   victory.forEach((e) => {
     e.forEach((b) => {
 
@@ -69,10 +65,6 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
 
       if ('Firma' in b) {
         renameKey(b, 'Firma', 'company')
-      }
-
-      if ('Hasło' in b) {
-        renameKey(b, 'Hasło', 'password')
       }
 
       if ('Hasło' in b) {
@@ -103,30 +95,55 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
       try {
         pojedynczyUser.password.trim()
       }  catch(e){
-        console.log("blad gupi2")
+        console.log("blad password.trim")
       }
       try {
         pojedynczyUser.email.trim()
       }  catch(e){
-        console.log("blad gupi")
+        console.log("blad email.trim")
       }
       
       //tutaj robisz jeszcze jakieś inne rzeczy na zmiennej pojedynczyUser
       return pojedynczyUser // Musisz to zwrócić żeby te operacje się gdzieś zapisały
     })
   });
-  console.log(newVictory);
+  newVictory.forEach((e) => {
+    e.forEach((b) => {
 
+      if ('password' in b) {
+        console.log("password ok")
+      }
+      else{
+        console.log("kupa password")
+      }
+
+
+    })
+    })
+      
+  
+
+  
+  console.log(newVictory);
+  for (let i in newVictory){
+    console.log(i);
+
+  }
 
   const updatedJson = JSON.stringify(victory);
 
   console.log(updatedJson);
-  //const myJSON = JSON.stringify(victory);
-  //console.log(myJSON)
-
-  //var ws = wb.Sheets["SUBTOTAL"]
-  //var dat = xlsx.utils.sheet_to_json(ws)
+  app.use(function (err, req, res, next) {
+    console.error(err.stack)
+    res.status(500).send('Something broke!')
+  })
   return response.json(updatedJson);
+  app.use((req, res, next) => {
+    res.status(404).send({
+    status: 404,
+    error: 'Not found'
+    })
+   })
 
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
