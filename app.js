@@ -25,6 +25,11 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname);
   }
 });
+var badNews = function (req, res) {
+  console.log('req')
+  console.log(req)
+  res.send('Hello from C!')
+}
 const upload = multer({ storage: storage })
 
 app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
@@ -35,15 +40,15 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
   console.log(sheet_name_list)
   const victory = []
   sheet_name_list.forEach((sheetName) => {
-  victory.push(xlsx.utils.sheet_to_json(wb.Sheets[sheetName]))
+    victory.push(xlsx.utils.sheet_to_json(wb.Sheets[sheetName]))
   })
-  
+
   console.log(victory)
   function renameKey(obj, oldKey, newKey) {
     obj[newKey] = obj[oldKey];
     delete obj[oldKey];
   }
-  
+
   victory.forEach((e) => {
     e.forEach((b) => {
 
@@ -72,21 +77,21 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
       }
 
       if ('Imię i nazwisko' in b) {
-       
+
         renameKey(b, 'Imię i nazwisko', 'beforeSplit')
-        const nameLastname = b.beforeSplit 
+        const nameLastname = b.beforeSplit
         const afterSplit = nameLastname.split(' ');
-        const resultSplit =  afterSplit.filter(e =>  e);
-       // b.name = resultSplit[0]
+        const resultSplit = afterSplit.filter(e => e);
+        // b.name = resultSplit[0]
         const firstName = resultSplit.shift()
         b.name = firstName
         b.lastname = resultSplit.join()
         delete b.beforeSplit;
-       
 
-    }
+
+      }
     })
-      
+
     console.log(victory)
 
   })
@@ -94,15 +99,15 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
     return sheet.map(pojedynczyUser => {
       try {
         pojedynczyUser.password.trim()
-      }  catch(e){
+      } catch (e) {
         console.log("blad password.trim")
       }
       try {
         pojedynczyUser.email.trim()
-      }  catch(e){
+      } catch (e) {
         console.log("blad email.trim")
       }
-      
+
       //tutaj robisz jeszcze jakieś inne rzeczy na zmiennej pojedynczyUser
       return pojedynczyUser // Musisz to zwrócić żeby te operacje się gdzieś zapisały
     })
@@ -112,20 +117,23 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
 
       if ('password' in b) {
         console.log("password ok")
+        badNews("elowina")
+
       }
-      else{
+      else {
+
         console.log("kupa password")
       }
 
 
     })
-    })
-      
-  
+  })
 
-  
+
+
+
   console.log(newVictory);
-  for (let i in newVictory){
+  for (let i in newVictory) {
     console.log(i);
 
   }
@@ -137,14 +145,14 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
     console.error(err.stack)
     res.status(500).send('Something broke!')
   })
-  return response.json(updatedJson);
+
   app.use((req, res, next) => {
     res.status(404).send({
-    status: 404,
-    error: 'Not found'
+      status: 404,
+      error: 'Not found'
     })
-   })
-
+  })
+  return response.json(updatedJson);
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
 });
