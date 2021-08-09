@@ -14,6 +14,14 @@ app.use(express.static(
 
 
 app.use(express.json());
+function appErrorHandler(err, req, res, next) {
+  res.status(500).send('Something broke!')
+  res.status(404).json({
+    status: 404,
+    error: 'Nie znaleziono'
+  })
+}
+app.use(appErrorHandler);
 // Okreslenie nazwy zapisywanego pliku
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,10 +33,16 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname);
   }
 });
-var badNews = function (req, res) {
+const badNews = (req, response) => {
   console.log('req')
-  console.log(req)
-  res.send('Hello from C!')
+  console.log(response)
+  response.send('Hello from C!')
+  console.log(response)
+  console.log("response")
+
+
+  response.end
+  return
 }
 const upload = multer({ storage: storage })
 
@@ -117,8 +131,7 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
 
       if ('password' in b) {
         console.log("password ok")
-        badNews("elowina")
-
+        badNews(req, response)
       }
       else {
 
@@ -141,17 +154,10 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
   const updatedJson = JSON.stringify(victory);
 
   console.log(updatedJson);
-  app.use(function (err, req, res, next) {
-    console.error(err.stack)
-    res.status(500).send('Something broke!')
-  })
+  
+  
 
-  app.use((req, res, next) => {
-    res.status(404).send({
-      status: 404,
-      error: 'Not found'
-    })
-  })
+ 
   return response.json(updatedJson);
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
