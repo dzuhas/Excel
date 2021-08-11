@@ -35,14 +35,12 @@ const storage = multer.diskStorage({
 });
 const badNews = (req, response) => {
   console.log('req')
-  console.log(response)
-  response.send('Hello from C!')
-  console.log(response)
-  console.log("response")
+  const updatedJson2 = JSON.stringify({ x: 5, y: 6 });
+        console.log("jest ok")
+        return response.json(updatedJson2);
 
-
-  response.end
-  return
+  
+  
 }
 const upload = multer({ storage: storage })
 
@@ -57,7 +55,6 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
     victory.push(xlsx.utils.sheet_to_json(wb.Sheets[sheetName]))
   })
 
-  console.log(victory)
   function renameKey(obj, oldKey, newKey) {
     obj[newKey] = obj[oldKey];
     delete obj[oldKey];
@@ -126,7 +123,7 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
       return pojedynczyUser // Musisz to zwrócić żeby te operacje się gdzieś zapisały
     })
   });
-  newVictory.forEach((e) => {
+  /* newVictory.forEach((e) => {
     e.forEach((b) => {
 
       if ('password' in b) {
@@ -140,25 +137,37 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
 
 
     })
+  }) */
+  const afterCheck = newVictory.forEach((e) => {
+    e.every((b) => {
+      if ('password' in b) {
+        console.log("password ok")
+        return true
+      }
+      else {
+
+        console.log("kupa password")
+        return false
+
+      }
+
+    })
   })
 
+  if (afterCheck == true){
+    console.log("password BARDZO ok")
+    const updatedJson = JSON.stringify(victory);
 
-
-
-  console.log(newVictory);
-  for (let i in newVictory) {
-    console.log(i);
-
+    console.log(updatedJson);
+    
+    return response.json(updatedJson);
+  }
+  else{
+      badNews(req, response)
+        
   }
 
-  const updatedJson = JSON.stringify(victory);
-
-  console.log(updatedJson);
   
-  
-
- 
-  return response.json(updatedJson);
   // req.file is the `avatar` file
   // req.body will hold the text fields, if there were any
 });
