@@ -131,7 +131,7 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
         }
         else {
 
-          console.log("kupa password")
+          console.log("no password")
           return false
 
         }
@@ -148,7 +148,7 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
   console.log(afterCheck);
 
   if (afterCheck == true) {
-    console.log("password BARDZO ok")
+    console.log("password is ok")
     const updatedJson = JSON.stringify(newVictory);
 
     console.log(updatedJson);
