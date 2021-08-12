@@ -33,14 +33,12 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname);
   }
 });
+
 const badNews = (req, response) => {
   console.log('req')
-  const updatedJson2 = JSON.stringify({ x: 5, y: 6 });
-        console.log("jest ok")
-        return response.json(updatedJson2);
-
-  
-  
+  const updatedJson2 = JSON.stringify({ brak: "password lub/i email" });
+  console.log("jest ok")
+  return response.json(updatedJson2);
 }
 const upload = multer({ storage: storage })
 
@@ -123,51 +121,43 @@ app.post('/upload', upload.single('excel.xlsx'), (req, response) => {
       return pojedynczyUser // Musisz to zwrócić żeby te operacje się gdzieś zapisały
     })
   });
-  /* newVictory.forEach((e) => {
-    e.forEach((b) => {
+  
+  const afterCheck = newVictory.every((e) => {
+    if (
+      e.every((b) => {
+        if ('password' in b && 'email' in b) {
+          console.log("password ok")
+          return true
+        }
+        else {
 
-      if ('password' in b) {
-        console.log("password ok")
-        badNews(req, response)
-      }
-      else {
+          console.log("kupa password")
+          return false
 
-        console.log("kupa password")
-      }
+        }
 
-
-    })
-  }) */
-  const afterCheck = newVictory.forEach((e) => {
-    e.every((b) => {
-      if ('password' in b) {
-        console.log("password ok")
+      }) == true) {
         return true
-      }
-      else {
 
-        console.log("kupa password")
-        return false
+    }
+    else {
+      return false
+    }
 
-      }
-
-    })
   })
+  console.log(afterCheck);
 
-  if (afterCheck == true){
+  if (afterCheck == true) {
     console.log("password BARDZO ok")
-    const updatedJson = JSON.stringify(victory);
+    const updatedJson = JSON.stringify(newVictory);
 
     console.log(updatedJson);
-    
+
     return response.json(updatedJson);
   }
-  else{
-      badNews(req, response)
-        
+  else {
+    badNews(req, response)
+
   }
 
-  
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
 });
